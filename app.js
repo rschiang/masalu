@@ -1,6 +1,7 @@
 var fs = require('fs');
 var Hackpad = require('hackpad');
 var to_markdown = require('to-markdown');
+var east_asian = require('east-asian-width');
 
 // Load configuration files
 var settings = {};
@@ -19,7 +20,21 @@ function fetch(padId) {
             console.log('Cannot acquire pad #' + padId);
         } else {
             var marked_data = to_markdown(data);
-            fs.writeFile(padId + '.md', marked_data);
+            var buffer = '';
+            var start_index = 0, length = 0;
+            for (var i = 0; i < marked_data.length; i++) {
+                var char = marked_data.codePointAt(i);
+                var width = east_asian.cjk_char_width(char);
+                if (char == 10 || (length + width) >= 70) { // Line break or wrapping
+                    buffer += marked_data.substring(start_index, char == 10 ? i : i+1) + '\n';
+                    start_index = i + 1;
+                    length = 0;
+                } else {
+                    length += width;
+                }
+            }
+
+            fs.writeFile(padId + '.md', buffer);
         }
     });
 }
