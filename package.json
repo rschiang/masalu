@@ -1,0 +1,22 @@
+{
+  "name": "masalu",
+  "version": "0.1.0",
+  "description": "Converting Hackpad documents into sensible PTT format",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rschiang/masalu.git"
+  },
+  "author": "Poren Chiang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rschiang/masalu/issues"
+  },
+  "homepage": "https://github.com/rschiang/masalu#readme",
+  "dependencies": {
+    "hackpad": "0.0.3"
+  }
+}
