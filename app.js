@@ -19,7 +19,14 @@ function fetch(padId) {
         if (e) {
             console.log('Cannot acquire pad #' + padId);
         } else {
+            // Preprocess Hackpad soup
+            var data = data.replace(/(<a href=[^>]+)\/>/gi, '$1>')
+                         .replace(/(&nbsp;)+/, ' ')
+
+            // Convert to Markdown
             var marked_data = to_markdown(data);
+
+            // Hard-wrap
             var buffer = '';
             var start_index = 0, length = 0;
             for (var i = 0; i < marked_data.length; i++) {
