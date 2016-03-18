@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/rschiang/masalu#readme",
   "dependencies": {
-    "hackpad": "0.0.3"
+    "hackpad": "0.0.3",
+    "to-markdown": "^2.0.1"
   }
 }
