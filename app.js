@@ -22,6 +22,7 @@ function fetch(padId) {
             // Preprocess Hackpad soup
             var data = data.replace(/(<a href=[^>]+)\/>/gi, '$1>')
                            .replace(/<a href=[^>]+>\s*<\/a>/gi, '')
+                           .replace(/<\/?u>/gi, '')
                            .replace(/(&nbsp;)+/g, ' ')
 
             // Convert to Markdown
@@ -29,18 +30,37 @@ function fetch(padId) {
                 converters: [
                     {
                         filter: function(node) {
-                            return node.nodeName == 'UL' && (/none/i.test(node.style.listStyle) || /comment/i.test(node.className));
+                            return node.nodeName == 'UL' && (/none/i.test(node.style.listStyle));
                         },
                         replacement: function(content, node) {
                             var buf = '';
-                            for (var i = 0; i < node.children.length; i++) {
+                            for (var i = 0; i < node.children.length; i++)
                                 buf += node.children[i].textContent + '\n'
-                            }
                             return buf;
+                        }
+                    },
+                    {
+                        filter: function(node) {
+                            return node.nodeName == 'UL' && (/comment/i.test(node.className));
+                        },
+                        replacement: function(content, node) {
+                            return '// ' + node.textContent;
+                        }
+                    },
+                    {
+                        filter: function(node) {
+                            return node.nodeName == 'A' && node.textContent == node.href;
+                        },
+                        replacement: function(content, node) {
+                            return node.textContent;
                         }
                     }
                 ]
             });
+
+            // Postprocess
+            marked_data = marked_data.replace(/    /g, '  ')
+                                     .replace(/   /g, ' ')
 
             // Hard-wrap
             var buffer = '';
