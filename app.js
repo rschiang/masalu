@@ -21,10 +21,26 @@ function fetch(padId) {
         } else {
             // Preprocess Hackpad soup
             var data = data.replace(/(<a href=[^>]+)\/>/gi, '$1>')
-                         .replace(/(&nbsp;)+/, ' ')
+                           .replace(/<a href=[^>]+>\s*<\/a>/gi, '')
+                           .replace(/(&nbsp;)+/g, ' ')
 
             // Convert to Markdown
-            var marked_data = to_markdown(data);
+            var marked_data = to_markdown(data, {
+                converters: [
+                    {
+                        filter: function(node) {
+                            return node.nodeName == 'UL' && (/none/i.test(node.style.listStyle) || /comment/i.test(node.className));
+                        },
+                        replacement: function(content, node) {
+                            var buf = '';
+                            for (var i = 0; i < node.children.length; i++) {
+                                buf += node.children[i].textContent + '\n'
+                            }
+                            return buf;
+                        }
+                    }
+                ]
+            });
 
             // Hard-wrap
             var buffer = '';
