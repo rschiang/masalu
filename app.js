@@ -75,18 +75,36 @@ function wrap(text) {
     // Hard-wrap
     var buffer = '';
     var start_index = 0, length = 0;
+    var indent = 0, has_indent = false;
     for (var i = 0; i < text.length; i++) {
         var char = text.codePointAt(i);
         var width = east_asian.cjk_char_width(char);
-        if (char == 10) { // Line break
+        if (char == 0x0a) { // Line break
+            // Start a new line
             buffer += text.substring(start_index, i+1);
             start_index = i + 1;
             length = 0;
+
+            // Reset indent
+            indent = 0;
+            has_indent = false;
         } else if ((length + width) >= 70) { // Manual wrapping
+            // Start a new line
             buffer += text.substring(start_index, i+1) + '\n';
             start_index = i + 1;
-            length = 0;
+
+            // Append indent
+            if (indent > 0)
+                buffer += ' '.repeat(indent + 2)
+            length = indent + 2;
         } else {
+            // Calculate indent
+            if (!has_indent)
+                if (char == 0x20)
+                    indent++;
+                else
+                    has_indent = true;
+
             length += width;
         }
     }
