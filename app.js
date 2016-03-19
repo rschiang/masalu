@@ -17,7 +17,7 @@ var hackpad = new Hackpad(settings.client_id, settings.secret, { site: settings.
 function fetch(pad_id, callback) {
     hackpad.export(pad_id, '', 'html', function(e, data) {
         if (e) {
-            console.log('Cannot acquire pad #' + pad_id);
+            console.warn('Cannot acquire pad #' + pad_id);
         } else {
             callback(data);
         }
@@ -145,10 +145,16 @@ function export_file(pad_id) {
     });
 }
 
-process.argv.slice(2).forEach(function(val, i, array) {
-    if (/[A-Za-z0-9]{10,}/gi.test(val))
-        export_file(val);
-});
+// Process command line arguments
+if (process.argv.includes('--help')) {
+    console.info('Usage: node masalu/app.js [Hackpad IDs]...');
+    console.info(' * Don’t forget to set up config.json first.');
+} else {
+    process.argv.slice(2).forEach(function(val, i, array) {
+        if (/[A-Za-z0-9]{10,}/gi.test(val))
+            export_file(val);
+    });
+}
 
 module.exports = {
     fetch: fetch,
