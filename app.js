@@ -73,6 +73,15 @@ function convert(data) {
                 replacement: function(content, node) {
                     return node.textContent;
                 }
+            },
+            {
+                filter: function(node) {
+                    return node.nodeName == 'A' && node.href.startsWith('/');
+                },
+                replacement: function(content, node) {
+                    var href = node.href.replace(/^\/[A-Za-z0-9\-]+--/g, 'https://ntusa.hackpad.com/');
+                    return `[${node.textContent}](${href})`;
+                }
             }
         ]
     });
@@ -80,6 +89,7 @@ function convert(data) {
     // Postprocess
     text = text.replace(/    /g, '  ')
                .replace(/   /g, ' ')
+               .replace(/^\*\*(.+)\*\*$/gm, '【$1】')
 
     return text;
 }
