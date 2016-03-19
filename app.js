@@ -79,8 +79,8 @@ function convert(data) {
                     return node.nodeName == 'A' && node.href.startsWith('/');
                 },
                 replacement: function(content, node) {
-                    var href = node.href.replace(/^\/[A-Za-z0-9\-]+--/g, `https://${settings.site}.hackpad.com/`);
-                    return `[${node.textContent}](${href})`;
+                    var href = node.href.replace(/^\/[A-Za-z0-9\-\.]*--/g, '/');
+                    return `[${node.textContent}](https://${settings.site}.hackpad.com${href})`;
                 }
             }
         ]
@@ -146,7 +146,7 @@ function export_file(pad_id) {
 }
 
 // Process command line arguments
-if (process.argv.includes('--help')) {
+if (process.argv.indexOf('--help') > 0) {
     console.info('Usage: node masalu/app.js [Hackpad IDs]...');
     console.info(' * Don’t forget to set up config.json first.');
 } else {
