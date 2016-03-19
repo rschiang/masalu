@@ -12,7 +12,7 @@ try {
     throw e;
 }
 
-var hackpad = new Hackpad(settings.client_id, settings.secret, { site: 'ntusa' });
+var hackpad = new Hackpad(settings.client_id, settings.secret, { site: settings.site });
 
 function fetch(pad_id, callback) {
     hackpad.export(pad_id, '', 'html', function(e, data) {
@@ -79,7 +79,7 @@ function convert(data) {
                     return node.nodeName == 'A' && node.href.startsWith('/');
                 },
                 replacement: function(content, node) {
-                    var href = node.href.replace(/^\/[A-Za-z0-9\-]+--/g, 'https://ntusa.hackpad.com/');
+                    var href = node.href.replace(/^\/[A-Za-z0-9\-]+--/g, `https://${settings.site}.hackpad.com/`);
                     return `[${node.textContent}](${href})`;
                 }
             }
