@@ -39,10 +39,23 @@ function convert(data) {
                     return node.nodeName == 'UL' && (/none/i.test(node.style.listStyle));
                 },
                 replacement: function(content, node) {
-                    var buf = '';
-                    for (var i = 0; i < node.children.length; i++)
-                        buf += node.children[i].textContent + '\n'
-                    return buf;
+                    function _parse(node, indent_level) {
+                        var buf = '';
+                        for (var index = 0; index < node.childNodes.length; index++) {
+                            var i = node.childNodes[index];
+                            if (i.nodeName == '#text') {
+                                var content = node.textContent.trim();
+                                if (content) {
+                                    buf += (' '.repeat(indent_level) + content + '\n');
+                                }
+                            } else {
+                                buf += _parse(i, indent_level + 4);
+                            }
+                        }
+                        return buf;
+                    }
+
+                    return _parse(node, 0);
                 }
             },
             {
