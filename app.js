@@ -6,7 +6,7 @@ var east_asian = require('east-asian-width');
 // Load configuration files
 var settings = {};
 try {
-    settings = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+    settings = require('./config.json');
 } catch (e) {
     console.error('Config file (API key and secret) missing.');
     throw e;
